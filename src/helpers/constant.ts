@@ -37,6 +37,11 @@ export enum JourneyType {
   EDUCATION = 'EDUCATION',
 }
 
+export enum ProfileImageType {
+  PROFILE = 'PROFILE',
+  COVER = 'COVER',
+}
+
 export enum NotificationType {
   SCONVO = 'SCONVO',
 }
@@ -52,6 +57,9 @@ export interface Mail {
 
 registerEnumType(UserRole, {
   name: 'UserRole',
+});
+registerEnumType(ProfileImageType, {
+  name: 'ProfileImageType',
 });
 registerEnumType(JourneyType, {
   name: 'JourneyType',

@@ -28,15 +28,13 @@ export class HelperService {
     return Math.random().toString(36).slice(-12);
   }
 
-  public uploadFile(
-    { createReadStream, filename }: FileUpload,
-    id,
-  ): Promise<String> {
+  public uploadFile(file: FileUpload, id, path): Promise<String> {
+    const { createReadStream, filename } = file;
     const files = filename?.split('.');
     const fname = `${id}.${files[1]}`;
     return new Promise(async (resolve, reject) =>
       createReadStream()
-        .pipe(createWriteStream(`./assets/${fname}`))
+        .pipe(createWriteStream(`./assets/${path}/${fname}`))
         .on('finish', () => resolve(fname))
         .on('error', () => reject(false)),
     );

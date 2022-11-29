@@ -19,6 +19,14 @@ export class User {
   @Field({ nullable: true })
   email: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  profileImg: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  coverImg: string;
+
   @Column({ unique: true, nullable: true })
   @Field({ nullable: true })
   name: string;
