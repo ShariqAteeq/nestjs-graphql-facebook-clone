@@ -6,6 +6,7 @@ import { User } from '../entities/user';
 import * as bcrypt from 'bcrypt';
 import { SMSToken } from '../entities/token';
 import * as moment from 'moment';
+import { UserStatus } from 'src/helpers/constant';
 @Injectable()
 export class UserService {
   constructor(
@@ -14,7 +15,7 @@ export class UserService {
   ) {}
 
   async create(payload: UserSignUpInput): Promise<User> {
-    const { email, password, name } = payload;
+    const { email, password, name, role } = payload;
 
     const existingUser = await this.userRepo.findOne({ where: { email } });
 
@@ -29,6 +30,8 @@ export class UserService {
     user['password'] = await bcrypt.hash(password, 10);
     user['email'] = email;
     user['name'] = name;
+    user['status'] = UserStatus.ACTIVE;
+    user['role'] = role;
     const createdUser = await this.userRepo.save(user);
     return createdUser;
   }

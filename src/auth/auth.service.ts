@@ -36,10 +36,10 @@ export class AuthService {
   async validateUser(payload: LoginInput): Promise<User> {
     const { email } = payload;
     const user = await this.userRepo.findOneBy({ email });
-    const { password, ...rest } = user;
     if (!user) {
       throw new HttpException('User not found!', HttpStatus.NOT_FOUND);
     }
+    const { password, ...rest } = user;
     if (!bcrypt.compareSync(payload['password'], user['password'])) {
       throw new HttpException('Incorrect Password!', HttpStatus.BAD_REQUEST);
     }

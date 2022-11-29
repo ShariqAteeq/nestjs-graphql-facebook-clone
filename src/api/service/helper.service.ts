@@ -1,3 +1,5 @@
+import { createWriteStream } from 'fs';
+import { FileUpload } from 'graphql-upload';
 import { Injectable } from '@nestjs/common';
 import * as moment from 'moment';
 
@@ -24,6 +26,20 @@ export class HelperService {
 
   public getTempPassword(): string {
     return Math.random().toString(36).slice(-12);
+  }
+
+  public uploadFile(
+    { createReadStream, filename }: FileUpload,
+    id,
+  ): Promise<String> {
+    const files = filename?.split('.');
+    const fname = `${id}.${files[1]}`;
+    return new Promise(async (resolve, reject) =>
+      createReadStream()
+        .pipe(createWriteStream(`./assets/${fname}`))
+        .on('finish', () => resolve(fname))
+        .on('error', () => reject(false)),
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -52,6 +52,7 @@ export class TestResolver {
     { createReadStream, filename }: FileUpload,
   ): Promise<boolean> {
     const fname = `${ulid()}_${filename}`;
+    console.log('filename', filename?.split('.'));
     console.log('fname', fname);
     return new Promise(async (resolve, reject) =>
       createReadStream()

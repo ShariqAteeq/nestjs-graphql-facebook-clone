@@ -1,3 +1,4 @@
+import { JourneyResolver } from './resolver/journey.resolver';
 import { MessagingService } from './service/messaging.service';
 import { MessagingResolver } from './resolver/messaging.resolver';
 import { Conversation } from './entities/conversation';
@@ -17,6 +18,8 @@ import { TestResolver } from './resolver/test.resolver';
 import { NotificationResolver } from './resolver/notification.resolver';
 import { Notification } from './entities/notification';
 import { NotificationService } from './service/notification.service';
+import { Journey } from './entities/journey';
+import { JourneyService } from './service/journey.service';
 
 @Module({
   imports: [
@@ -26,6 +29,7 @@ import { NotificationService } from './service/notification.service';
     TypeOrmModule.forFeature([Conversation]),
     TypeOrmModule.forFeature([SMSToken]),
     TypeOrmModule.forFeature([Notification]),
+    TypeOrmModule.forFeature([Journey]),
     TypeOrmModule.forFeature([Test]),
   ],
   providers: [
@@ -33,7 +37,9 @@ import { NotificationService } from './service/notification.service';
     UserService,
     HelperService,
     NotificationService,
+    JourneyService,
     MessagingResolver,
+    JourneyResolver,
     NotificationResolver,
     ConversationResolver,
     TestResolver,
