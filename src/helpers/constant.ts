@@ -42,6 +42,18 @@ export enum ProfileImageType {
   COVER = 'COVER',
 }
 
+export enum RespondAction {
+  ACCEPTED = 'ACCEPTED',
+  PENDING = 'PENDING',
+  CANCELLED = 'CANCELLED',
+}
+
+export enum RelationshipType {
+  FRIEND_REQUEST = 'FRIEND_REQUEST',
+  LIKE = 'LIKE',
+  BLOCKED = 'BLOCKED',
+}
+
 export enum NotificationType {
   SCONVO = 'SCONVO',
 }
@@ -57,6 +69,12 @@ export interface Mail {
 
 registerEnumType(UserRole, {
   name: 'UserRole',
+});
+registerEnumType(RelationshipType, {
+  name: 'RelationshipType',
+});
+registerEnumType(RespondAction, {
+  name: 'RespondAction',
 });
 registerEnumType(ProfileImageType, {
   name: 'ProfileImageType',
