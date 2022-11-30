@@ -1,3 +1,6 @@
+import { RelationshipResolver } from './resolver/relationship.resolver';
+import { RelationshipService } from './service/relationship.service';
+import { Relationship } from './entities/relationship';
 import { JourneyResolver } from './resolver/journey.resolver';
 import { MessagingService } from './service/messaging.service';
 import { MessagingResolver } from './resolver/messaging.resolver';
@@ -30,6 +33,7 @@ import { JourneyService } from './service/journey.service';
     TypeOrmModule.forFeature([SMSToken]),
     TypeOrmModule.forFeature([Notification]),
     TypeOrmModule.forFeature([Journey]),
+    TypeOrmModule.forFeature([Relationship]),
     TypeOrmModule.forFeature([Test]),
   ],
   providers: [
@@ -44,6 +48,8 @@ import { JourneyService } from './service/journey.service';
     ConversationResolver,
     TestResolver,
     MessagingService,
+    RelationshipService,
+    RelationshipResolver,
     {
       provide: 'PUB_SUB',
       useValue: new PubSub(),

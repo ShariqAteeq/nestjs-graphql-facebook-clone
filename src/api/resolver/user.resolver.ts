@@ -1,4 +1,6 @@
-import { ProfileImageType } from './../../helpers/constant';
+import { GqlAuthGuard } from 'src/auth/auth.guard';
+import { Relationship } from './../entities/relationship';
+import { ProfileImageType, RespondAction } from './../../helpers/constant';
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import {
   Args,
@@ -16,6 +18,7 @@ import { CurrentUser } from 'src/decorators/user.decorator';
 import { HelperService } from '../service/helper.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UseGuards } from '@nestjs/common';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -24,6 +27,8 @@ export class UserResolver {
     private journeyService: JourneyService,
     private helperService: HelperService,
     @InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(Relationship)
+    private relationshipRepo: Repository<Relationship>,
   ) {}
 
   @Query(() => User)
@@ -34,6 +39,25 @@ export class UserResolver {
   @ResolveField()
   async journey(@Parent() user: User): Promise<Journey[]> {
     return await this.journeyService.getUserJourney(user.id);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @ResolveField()
+  async friendStatus(
+    @Parent() otherUser: User,
+    @CurrentUser() user,
+  ): Promise<Relationship> {
+    const friend = await this.relationshipRepo.findOne({
+      where: { userId: user?.userId, otherUserId: otherUser.id },
+    });
+    if (!friend) {
+      const otherUserView = await this.relationshipRepo.findOne({
+        where: { userId: otherUser.id, otherUserId: user?.userId },
+      });
+      return otherUserView;
+    } else {
+      return friend;
+    }
   }
 
   @Mutation(() => Boolean)

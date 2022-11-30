@@ -1,5 +1,6 @@
+import { Relationship } from './relationship';
 import { Journey } from './journey';
-import { UserRole, UserStatus } from 'src/helpers/constant';
+import { RespondAction, UserRole, UserStatus } from 'src/helpers/constant';
 import { Field, HideField, ObjectType } from '@nestjs/graphql';
 import {
   Column,
@@ -41,6 +42,9 @@ export class User {
 
   @Field(() => [Journey], { nullable: true })
   journey: Journey[];
+
+  @Field(() => Relationship, { nullable: true })
+  friendStatus?: Relationship;
 
   @Column({ nullable: true })
   @HideField()

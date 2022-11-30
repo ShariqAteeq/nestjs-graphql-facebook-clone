@@ -49,7 +49,7 @@ export enum RespondAction {
 }
 
 export enum RelationshipType {
-  FRIEND_REQUEST = 'FRIEND_REQUEST',
+  FRIENDS = 'FRIENDS',
   LIKE = 'LIKE',
   BLOCKED = 'BLOCKED',
 }

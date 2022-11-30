@@ -14,7 +14,7 @@ export class Relationship {
   @Field()
   otherUserId: string;
 
-  @Field({ nullable: true })
+  @Field(() => User, { nullable: true })
   otherUser: User;
 
   @Column()

@@ -54,6 +54,7 @@ import { DatabaseOrmModule } from './database.orm.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
+      fieldResolverEnhancers: ['guards'],
       subscriptions: {
         'graphql-ws': true,
         'subscriptions-transport-ws': {
