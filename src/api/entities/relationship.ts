@@ -28,6 +28,13 @@ export class Relationship {
   @CreateDateColumn({
     type: 'timestamp',
     nullable: true,
+  })
+  @Field({ nullable: true })
+  timestamp: Date;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    nullable: true,
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
   logCreatedAt: Date;

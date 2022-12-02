@@ -25,6 +25,7 @@ export class RelationshipResolver {
     private userService: UserService,
   ) {}
 
+  // ========== Manage Friend Request ============ \\
   @UseGuards(GqlAuthGuard)
   @Mutation(() => Relationship)
   async manageFriends(
@@ -34,6 +35,17 @@ export class RelationshipResolver {
     return await this.relService.manageFriends(input, user);
   }
 
+  // ========== Delete Friend Request ============ \\
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => Boolean)
+  async deleteFriendRequest(
+    @Args('otherUserId') otherUserId: string,
+    @CurrentUser() user,
+  ): Promise<Boolean> {
+    return await this.relService.deleteFriendRequest(otherUserId, user);
+  }
+
+  // ========== Get Friends ============ \\
   @UseGuards(GqlAuthGuard)
   @Query(() => [Relationship])
   async getUserFriends(
