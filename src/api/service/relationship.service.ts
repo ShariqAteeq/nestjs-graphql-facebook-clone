@@ -103,6 +103,8 @@ export class RelationshipService {
     return true;
   }
 
+  not;
+
   async getUserFriends(
     input: GetUserFriendsInput,
     @CurrentUser() user,
@@ -131,12 +133,16 @@ export class RelationshipService {
       .andWhere('relationship.otherUserId != :otherUserId ', {
         otherUserId: user?.userId,
       })
+      .andWhere('relationship.otherUserId NOT IN (:...friendsids) ', {
+        friendsids: myFriendsIds,
+      })
       .andWhere('relationship.relationshipType = :relType', {
         relType: RelationshipType.FRIENDS,
       })
       .andWhere('relationship.status = :status', {
         status: RespondAction.ACCEPTED,
       })
+      .distinctOn(['relationship.otherUserId'])
       .getMany();
     console.log('t', t);
     // const preomiseArr = [];
