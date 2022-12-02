@@ -55,6 +55,14 @@ export class RelationshipResolver {
     return await this.relService.getUserFriends(input, user);
   }
 
+  // ========== Get Suggested Friends ============ \\
+  @UseGuards(GqlAuthGuard)
+  @Query(() => Boolean)
+  async getSuggestedFriends(@CurrentUser() user) {
+    await this.relService.getSuggestedFriends(user);
+    return true;
+  }
+
   @ResolveField()
   async otherUser(@Parent() rel: Relationship): Promise<User> {
     return await this.userService.getUser(rel.otherUserId);

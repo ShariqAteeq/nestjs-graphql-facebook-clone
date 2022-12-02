@@ -1,4 +1,4 @@
-import { RespondAction } from './../../helpers/constant';
+import { RelationshipType, RespondAction } from './../../helpers/constant';
 import {
   GetUserFriendsInput,
   ManageFriendRequestInput,
@@ -6,7 +6,7 @@ import {
 import { Relationship } from './../entities/relationship';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Brackets, Not, Repository } from 'typeorm';
 import { CurrentUser } from 'src/decorators/user.decorator';
 
 @Injectable()
@@ -113,5 +113,47 @@ export class RelationshipService {
       where: { userId, relationshipType, status },
     });
     return relation;
+  }
+
+  async getSuggestedFriends(@CurrentUser() user) {
+    const myFriendsIds = await this.relRepo
+      .find({
+        where: {
+          userId: user?.userId,
+          relationshipType: RelationshipType.FRIENDS,
+          status: RespondAction.ACCEPTED,
+        },
+      })
+      .then((x) => x.map((y) => y.otherUserId));
+    const t = await this.relRepo
+      .createQueryBuilder('relationship')
+      .where('relationship.userId IN (:...ids)', { ids: myFriendsIds })
+      .andWhere('relationship.otherUserId != :otherUserId ', {
+        otherUserId: user?.userId,
+      })
+      .andWhere('relationship.relationshipType = :relType', {
+        relType: RelationshipType.FRIENDS,
+      })
+      .andWhere('relationship.status = :status', {
+        status: RespondAction.ACCEPTED,
+      })
+      .getMany();
+    console.log('t', t);
+    // const preomiseArr = [];
+    // for (const x of myFriendsIds) {
+    //   preomiseArr.push(
+    //     this.relRepo.find({
+    //       where: {
+    //         userId: x,
+    //         otherUserId: Not(user?.userId),
+    //         relationshipType: RelationshipType.FRIENDS,
+    //         status: RespondAction.ACCEPTED,
+    //       },
+    //     }),
+    //   );
+    // }
+    // const res = await Promise.all(preomiseArr);
+    console.log('myFreinds', myFriendsIds);
+    // console.log('res', res);
   }
 }
