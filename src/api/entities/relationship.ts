@@ -17,6 +17,9 @@ export class Relationship {
   @Field(() => User, { nullable: true })
   otherUser: User;
 
+  @Field(() => User, { nullable: true })
+  user: User;
+
   @Column()
   @Field(() => RespondAction, { nullable: true })
   status: RespondAction;

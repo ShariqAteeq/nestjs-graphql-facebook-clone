@@ -103,8 +103,6 @@ export class RelationshipService {
     return true;
   }
 
-  not;
-
   async getUserFriends(
     input: GetUserFriendsInput,
     @CurrentUser() user,
@@ -117,7 +115,7 @@ export class RelationshipService {
     return relation;
   }
 
-  async getSuggestedFriends(@CurrentUser() user) {
+  async getSuggestedFriends(@CurrentUser() user): Promise<Relationship[]> {
     const myFriendsIds = await this.relRepo
       .find({
         where: {
@@ -127,7 +125,7 @@ export class RelationshipService {
         },
       })
       .then((x) => x.map((y) => y.otherUserId));
-    const t = await this.relRepo
+    const freindsOfFriends = await this.relRepo
       .createQueryBuilder('relationship')
       .where('relationship.userId IN (:...ids)', { ids: myFriendsIds })
       .andWhere('relationship.otherUserId != :otherUserId ', {
@@ -144,22 +142,34 @@ export class RelationshipService {
       })
       .distinctOn(['relationship.otherUserId'])
       .getMany();
-    console.log('t', t);
-    // const preomiseArr = [];
-    // for (const x of myFriendsIds) {
-    //   preomiseArr.push(
-    //     this.relRepo.find({
-    //       where: {
-    //         userId: x,
-    //         otherUserId: Not(user?.userId),
-    //         relationshipType: RelationshipType.FRIENDS,
-    //         status: RespondAction.ACCEPTED,
-    //       },
-    //     }),
-    //   );
-    // }
-    // const res = await Promise.all(preomiseArr);
     console.log('myFreinds', myFriendsIds);
-    // console.log('res', res);
+    console.log('freindsOfFriends', freindsOfFriends);
+    return freindsOfFriends;
+  }
+
+  async getMutualFriends(
+    otherUserId: string,
+    @CurrentUser() user,
+  ): Promise<Relationship[]> {
+    console.log('userId', user?.userId);
+    console.log('otherUserId', otherUserId);
+
+    if (user?.userId === otherUserId) return [];
+
+    const mutalFriends = await this.relRepo
+      .createQueryBuilder('relationship')
+      .where('relationship.userId = :userId', { userId: otherUserId })
+      .andWhere('relationship.otherUserId != :otherUserId ', {
+        otherUserId: user?.userId,
+      })
+      .andWhere('relationship.relationshipType = :relType', {
+        relType: RelationshipType.FRIENDS,
+      })
+      .andWhere('relationship.status = :status', {
+        status: RespondAction.ACCEPTED,
+      })
+      .getMany();
+    // console.log('freindsOfFriends', mutalFriends);
+    return mutalFriends;
   }
 }

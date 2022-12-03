@@ -43,6 +43,9 @@ export class User {
   @Field(() => [Journey], { nullable: true })
   journey: Journey[];
 
+  @Field(() => [Relationship], { nullable: true })
+  mutualFriends?: Relationship[];
+
   @Field(() => Relationship, { nullable: true })
   friendStatus?: Relationship;
 

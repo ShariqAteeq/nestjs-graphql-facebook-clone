@@ -1,3 +1,4 @@
+import { RelationshipService } from './../service/relationship.service';
 import { GqlAuthGuard } from 'src/auth/auth.guard';
 import { Relationship } from './../entities/relationship';
 import { ProfileImageType, RespondAction } from './../../helpers/constant';
@@ -25,6 +26,7 @@ export class UserResolver {
   constructor(
     private userService: UserService,
     private journeyService: JourneyService,
+    private relService: RelationshipService,
     private helperService: HelperService,
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Relationship)
@@ -85,5 +87,14 @@ export class UserResolver {
       await this.userRepo.save([{ id: userId, profileImg: image }]);
     }
     return true;
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @ResolveField()
+  async mutualFriends(
+    @Parent() otherUser: User,
+    @CurrentUser() user,
+  ): Promise<Relationship[]> {
+    return await this.relService.getMutualFriends(otherUser.id, user);
   }
 }
