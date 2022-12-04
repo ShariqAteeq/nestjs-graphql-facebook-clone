@@ -43,7 +43,6 @@ export class UserResolver {
     return await this.journeyService.getUserJourney(user.id);
   }
 
-  @UseGuards(GqlAuthGuard)
   @ResolveField()
   async friendStatus(
     @Parent() otherUser: User,
@@ -62,20 +61,22 @@ export class UserResolver {
     }
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Boolean)
   async uploadProfilePhoto(
     @Args({ name: 'file', type: () => GraphQLUpload })
     file: FileUpload,
     @Args('imageType') imageType: ProfileImageType,
-    @Args('userId') userId: string,
+    // @Args('userId') userId: string,
     @CurrentUser() user,
   ): Promise<boolean> {
-    // const { userId } = user;
+    const { userId } = user;
     if (imageType === ProfileImageType.PROFILE) {
+      console.log('run', file);
       const image = (await this.helperService.uploadFile(
         file,
-        '/user/profile',
         userId,
+        '/user/profile',
       )) as string;
       await this.userRepo.save([{ id: userId, profileImg: image }]);
     } else {

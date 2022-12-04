@@ -32,6 +32,8 @@ export class HelperService {
     const { createReadStream, filename } = file;
     const files = filename?.split('.');
     const fname = `${id}.${files[1]}`;
+    console.log('fname', fname);
+    console.log('files', files);
     return new Promise(async (resolve, reject) =>
       createReadStream()
         .pipe(createWriteStream(`./assets/${path}/${fname}`))

@@ -50,9 +50,9 @@ export class RelationshipResolver {
   @Query(() => [Relationship])
   async getUserFriends(
     @Args('input') input: GetUserFriendsInput,
-    @CurrentUser() user,
+    // @CurrentUser() user,
   ): Promise<Relationship[]> {
-    return await this.relService.getUserFriends(input, user);
+    return await this.relService.getUserFriends(input);
   }
 
   // ========== Get Suggested Friends ============ \\

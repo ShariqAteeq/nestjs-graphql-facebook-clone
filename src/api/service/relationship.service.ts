@@ -105,10 +105,10 @@ export class RelationshipService {
 
   async getUserFriends(
     input: GetUserFriendsInput,
-    @CurrentUser() user,
+    // @CurrentUser() user,
   ): Promise<Relationship[]> {
-    const { status, relationshipType } = input;
-    const { userId } = user;
+    const { status, relationshipType, userId } = input;
+    // const { userId } = user;
     const relation = await this.relRepo.find({
       where: { userId, relationshipType, status },
     });

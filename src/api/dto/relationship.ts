@@ -20,4 +20,7 @@ export class GetUserFriendsInput {
 
   @Field(() => RespondAction)
   status: RespondAction;
+
+  @Field()
+  userId: string;
 }
