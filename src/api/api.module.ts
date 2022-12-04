@@ -1,3 +1,6 @@
+import { PostService } from './service/post.service';
+import { PostResolver } from './resolver/post.resolver';
+import { Post } from './entities/post';
 import { RelationshipResolver } from './resolver/relationship.resolver';
 import { RelationshipService } from './service/relationship.service';
 import { Relationship } from './entities/relationship';
@@ -34,6 +37,7 @@ import { JourneyService } from './service/journey.service';
     TypeOrmModule.forFeature([Notification]),
     TypeOrmModule.forFeature([Journey]),
     TypeOrmModule.forFeature([Relationship]),
+    TypeOrmModule.forFeature([Post]),
     TypeOrmModule.forFeature([Test]),
   ],
   providers: [
@@ -46,6 +50,8 @@ import { JourneyService } from './service/journey.service';
     JourneyResolver,
     NotificationResolver,
     ConversationResolver,
+    PostResolver,
+    PostService,
     TestResolver,
     MessagingService,
     RelationshipService,

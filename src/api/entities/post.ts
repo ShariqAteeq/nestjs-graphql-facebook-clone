@@ -16,8 +16,8 @@ export class Post {
   @Field()
   id: number;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   description: string;
 
   @Column()

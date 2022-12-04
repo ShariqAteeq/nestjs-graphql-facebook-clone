@@ -26,6 +26,7 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
     //   return ctx.getContext().req;
     // }
     const authHeader = ctx.getContext().req?.headers?.authorization as string;
+    console.log('authHeader', authHeader);
     if (!authHeader) {
       throw new HttpException('Token not Found', HttpStatus.NOT_FOUND);
     }
