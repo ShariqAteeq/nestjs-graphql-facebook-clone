@@ -35,4 +35,10 @@ export class PostResolver {
   async getPosts(@Args({ name: 'userId' }) userId: string): Promise<Post[]> {
     return await this.postService.getPosts(userId);
   }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => [Boolean])
+  async deletePost(@Args({ name: 'postId' }) postId: number): Promise<Boolean> {
+    return await this.postService.deletePost(postId);
+  }
 }

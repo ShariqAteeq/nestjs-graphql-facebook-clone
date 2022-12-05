@@ -1,3 +1,4 @@
+import { Timeline } from './../entities/timeline';
 import { HelperService } from 'src/api/service/helper.service';
 import { FileUpload } from 'graphql-upload';
 import { UserService } from './user.service';
@@ -5,13 +6,14 @@ import { CreatePostInput } from './../dto/post';
 import { Post } from './../entities/post';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CurrentUser } from 'src/decorators/user.decorator';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post) private postRepo: Repository<Post>,
+    @InjectRepository(Timeline) private timelineRepo: Repository<Timeline>,
     private userService: UserService,
     private helperService: HelperService,
   ) {}
@@ -49,7 +51,17 @@ export class PostService {
       post['videos'] = resp;
     }
 
-    return await this.postRepo.save(post);
+    const res = await this.postRepo.save(post);
+
+    // saving timeline record
+    const timeline = new Timeline();
+    timeline['userId'] = userId;
+    timeline['postId'] = res.id;
+    timeline['timestamp'] = new Date();
+
+    await this.timelineRepo.save(timeline);
+
+    return res;
   }
 
   async getPosts(userId: string): Promise<Post[]> {
@@ -59,10 +71,21 @@ export class PostService {
     });
   }
 
+  async getAllPosts(condition: any): Promise<Post[]> {
+    return await this.postRepo.find({
+      where: { creatorId: In(condition?.userIds) },
+    });
+  }
+
   async getPost(postId: number): Promise<Post> {
     return await this.postRepo.findOne({
       where: { id: postId },
       relations: ['creator'],
     });
+  }
+
+  async deletePost(postId: number): Promise<Boolean> {
+    await this.postRepo.delete({ id: postId });
+    return true;
   }
 }

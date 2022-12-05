@@ -1,3 +1,5 @@
+import { Timeline } from './../entities/timeline';
+import { PostService } from './post.service';
 import { RelationshipType, RespondAction } from './../../helpers/constant';
 import {
   GetUserFriendsInput,
@@ -6,13 +8,15 @@ import {
 import { Relationship } from './../entities/relationship';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CurrentUser } from 'src/decorators/user.decorator';
 
 @Injectable()
 export class RelationshipService {
   constructor(
     @InjectRepository(Relationship) private relRepo: Repository<Relationship>,
+    @InjectRepository(Timeline) private timelineRepo: Repository<Timeline>,
+    private postService: PostService,
   ) {}
 
   async manageFriends(
@@ -74,6 +78,34 @@ export class RelationshipService {
 
     //  // ===== adding myself as otheruser freind ===== \\
     if (respondAction === RespondAction.ACCEPTED) {
+      const getMyAndOtherUserPosts = await this.postService.getAllPosts({
+        userIds: [userId, otherUserId],
+      });
+
+      // Creating Timeline Record
+      const timelineArr = [];
+      for (const x of getMyAndOtherUserPosts) {
+        if (x.creatorId === userId) {
+          timelineArr.push({
+            userId: otherUserId,
+            postId: +x.id,
+            timestamp: x.logCreatedAt,
+          });
+        } else {
+          timelineArr.push({
+            userId,
+            postId: +x.id,
+            timestamp: x.logCreatedAt,
+          });
+        }
+        timelineArr.push({
+          userId: x.creatorId,
+          postId: +x.id,
+          timestamp: x.logCreatedAt,
+        });
+      }
+      await this.timelineRepo.save(timelineArr);
+
       relationArr.push({
         userId: otherUserId,
         otherUserId: userId,

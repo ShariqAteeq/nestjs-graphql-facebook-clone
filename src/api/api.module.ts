@@ -1,3 +1,6 @@
+import { TimelineResolver } from './resolver/timeline.resolver';
+import { TimelineService } from './service/timeline.service';
+import { Timeline } from './entities/timeline';
 import { PostService } from './service/post.service';
 import { PostResolver } from './resolver/post.resolver';
 import { Post } from './entities/post';
@@ -38,6 +41,7 @@ import { JourneyService } from './service/journey.service';
     TypeOrmModule.forFeature([Journey]),
     TypeOrmModule.forFeature([Relationship]),
     TypeOrmModule.forFeature([Post]),
+    TypeOrmModule.forFeature([Timeline]),
     TypeOrmModule.forFeature([Test]),
   ],
   providers: [
@@ -50,6 +54,8 @@ import { JourneyService } from './service/journey.service';
     JourneyResolver,
     NotificationResolver,
     ConversationResolver,
+    TimelineService,
+    TimelineResolver,
     PostResolver,
     PostService,
     TestResolver,
