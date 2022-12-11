@@ -29,6 +29,7 @@ export class Timeline {
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
+  @Field({ nullable: true })
   logCreatedAt: Date;
 
   @CreateDateColumn({
@@ -36,5 +37,6 @@ export class Timeline {
     default: () => 'CURRENT_TIMESTAMP(6)',
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
+  @Field({ nullable: true })
   logUpdatedAt: Date;
 }

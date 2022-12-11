@@ -1,4 +1,5 @@
-import { Timeline } from './../entities/timeline';
+import { TimelineService } from './timeline.service';
+import { RelationshipService } from './relationship.service';
 import { HelperService } from 'src/api/service/helper.service';
 import { FileUpload } from 'graphql-upload';
 import { UserService } from './user.service';
@@ -8,12 +9,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { CurrentUser } from 'src/decorators/user.decorator';
+import { RelationshipType, RespondAction } from 'src/helpers/constant';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post) private postRepo: Repository<Post>,
-    @InjectRepository(Timeline) private timelineRepo: Repository<Timeline>,
+    private relService: RelationshipService,
+    private timelineService: TimelineService,
     private userService: UserService,
     private helperService: HelperService,
   ) {}
@@ -54,13 +57,24 @@ export class PostService {
     const res = await this.postRepo.save(post);
 
     // saving timeline record
-    const timeline = new Timeline();
-    timeline['userId'] = userId;
-    timeline['postId'] = res.id;
-    timeline['timestamp'] = new Date();
 
-    await this.timelineRepo.save(timeline);
+    const timelineArr = [
+      { userId, postId: +res.id, timestamp: res.logCreatedAt },
+    ];
+    // const myFirends = await this.relService.getUserFriends({
+    //   userId,
+    //   relationshipType: RelationshipType.FRIENDS,
+    //   status: RespondAction.ACCEPTED,
+    // });
 
+    // for (const x of myFirends) {
+    //   timelineArr.push({
+    //     userId: x.otherUserId,
+    //     postId: +res.id,
+    //     timestamp: res.logCreatedAt,
+    //   });
+    // }
+    await this.timelineService.addPostsInTimeline(timelineArr);
     return res;
   }
 

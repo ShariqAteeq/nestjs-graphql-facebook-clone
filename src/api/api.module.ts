@@ -40,8 +40,8 @@ import { JourneyService } from './service/journey.service';
     TypeOrmModule.forFeature([Notification]),
     TypeOrmModule.forFeature([Journey]),
     TypeOrmModule.forFeature([Relationship]),
-    TypeOrmModule.forFeature([Post]),
     TypeOrmModule.forFeature([Timeline]),
+    TypeOrmModule.forFeature([Post]),
     TypeOrmModule.forFeature([Test]),
   ],
   providers: [
@@ -54,19 +54,19 @@ import { JourneyService } from './service/journey.service';
     JourneyResolver,
     NotificationResolver,
     ConversationResolver,
-    TimelineService,
-    TimelineResolver,
     PostResolver,
     PostService,
     TestResolver,
     MessagingService,
     RelationshipService,
     RelationshipResolver,
+    TimelineService,
+    TimelineResolver,
     {
       provide: 'PUB_SUB',
       useValue: new PubSub(),
     },
   ],
-  exports: [],
+  exports: [RelationshipService, TimelineService],
 })
 export class ApiModule {}

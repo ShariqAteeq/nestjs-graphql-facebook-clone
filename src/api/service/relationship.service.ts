@@ -1,4 +1,4 @@
-import { Timeline } from './../entities/timeline';
+import { TimelineService } from './timeline.service';
 import { PostService } from './post.service';
 import { RelationshipType, RespondAction } from './../../helpers/constant';
 import {
@@ -15,8 +15,8 @@ import { CurrentUser } from 'src/decorators/user.decorator';
 export class RelationshipService {
   constructor(
     @InjectRepository(Relationship) private relRepo: Repository<Relationship>,
-    @InjectRepository(Timeline) private timelineRepo: Repository<Timeline>,
     private postService: PostService,
+    private timelineService: TimelineService,
   ) {}
 
   async manageFriends(
@@ -78,33 +78,33 @@ export class RelationshipService {
 
     //  // ===== adding myself as otheruser freind ===== \\
     if (respondAction === RespondAction.ACCEPTED) {
-      const getMyAndOtherUserPosts = await this.postService.getAllPosts({
-        userIds: [userId, otherUserId],
-      });
+      // const getMyAndOtherUserPosts = await this.postService.getAllPosts({
+      //   userIds: [userId, otherUserId],
+      // });
 
-      // Creating Timeline Record
-      const timelineArr = [];
-      for (const x of getMyAndOtherUserPosts) {
-        if (x.creatorId === userId) {
-          timelineArr.push({
-            userId: otherUserId,
-            postId: +x.id,
-            timestamp: x.logCreatedAt,
-          });
-        } else {
-          timelineArr.push({
-            userId,
-            postId: +x.id,
-            timestamp: x.logCreatedAt,
-          });
-        }
-        timelineArr.push({
-          userId: x.creatorId,
-          postId: +x.id,
-          timestamp: x.logCreatedAt,
-        });
-      }
-      await this.timelineRepo.save(timelineArr);
+      // // Creating Timeline Record
+      // const timelineArr = [];
+      // for (const x of getMyAndOtherUserPosts) {
+      //   if (x.creatorId === userId) {
+      //     timelineArr.push({
+      //       userId: otherUserId,
+      //       postId: +x.id,
+      //       timestamp: x.logCreatedAt,
+      //     });
+      //   } else {
+      //     timelineArr.push({
+      //       userId,
+      //       postId: +x.id,
+      //       timestamp: x.logCreatedAt,
+      //     });
+      //   }
+      //   timelineArr.push({
+      //     userId: x.creatorId,
+      //     postId: +x.id,
+      //     timestamp: x.logCreatedAt,
+      //   });
+      // }
+      // await this.timelineService.addPostsInTimeline(timelineArr);
 
       relationArr.push({
         userId: otherUserId,

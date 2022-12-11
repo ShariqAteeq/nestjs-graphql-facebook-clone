@@ -13,4 +13,8 @@ export class TimelineService {
   async getMyTimeline(@CurrentUser() user): Promise<Timeline[]> {
     return await this.timelineRepo.find({ where: { userId: user?.userId } });
   }
+
+  async addPostsInTimeline(payload: any): Promise<Timeline> {
+    return await this.timelineRepo.save(payload);
+  }
 }
