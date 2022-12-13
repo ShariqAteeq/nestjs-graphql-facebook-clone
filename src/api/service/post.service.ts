@@ -63,13 +63,7 @@ export class PostService {
       { userId, postId: +res.id, timestamp: res.logCreatedAt },
     ];
 
-    const myFirends = await this.relationshipRepo.find({
-      where: {
-        userId,
-        relationshipType: RelationshipType.FRIENDS,
-        status: RespondAction.ACCEPTED,
-      },
-    });
+    const myFirends = await this.getMyFriends(userId);
 
     for (const x of myFirends) {
       timelineArr.push({
@@ -82,9 +76,20 @@ export class PostService {
     return res;
   }
 
+  public async getMyFriends(userId: string): Promise<Relationship[]> {
+    return await this.relationshipRepo.find({
+      where: {
+        userId,
+        relationshipType: RelationshipType.FRIENDS,
+        status: RespondAction.ACCEPTED,
+      },
+    });
+  }
+
   async getPosts(userId: string): Promise<Post[]> {
     return await this.postRepo.find({
       where: { creatorId: userId },
+      order: { id: 'DESC' },
       relations: ['creator'],
     });
   }
@@ -102,7 +107,23 @@ export class PostService {
     });
   }
 
-  async deletePost(postId: number): Promise<Boolean> {
+  async deletePost(postId: number, @CurrentUser() user): Promise<Boolean> {
+    // getting my all friends
+    const myFirends = await this.getMyFriends(user?.userId);
+    console.log(
+      'myFriends',
+      myFirends?.map((x) => x.otherUserId),
+    );
+    console.log('userIds ', [
+      ...myFirends?.map((x) => x.otherUserId),
+      user?.userId,
+    ]);
+
+    // deleting posts from my and  my friends timeline
+    await this.timelineService.deletePostsFromTimeline({
+      userId: In([...myFirends?.map((x) => x.otherUserId), user?.userId]),
+      postId,
+    });
     await this.postRepo.delete({ id: postId });
     return true;
   }

@@ -11,7 +11,10 @@ export class TimelineService {
   ) {}
 
   async getMyTimeline(@CurrentUser() user): Promise<Timeline[]> {
-    return await this.timelineRepo.find({ where: { userId: user?.userId } });
+    return await this.timelineRepo.find({
+      where: { userId: user?.userId },
+      order: { postId: 'DESC' },
+    });
   }
 
   async addPostsInTimeline(payload: any): Promise<Timeline> {
@@ -19,9 +22,8 @@ export class TimelineService {
   }
 
   async deletePostsFromTimeline(payload: any): Promise<Boolean> {
-    console.log('payload', payload);
     const res = await this.timelineRepo.delete(payload);
-    console.log('Res', res);
+    console.log('Deleted Timeline Records ====== ', res);
     return true;
   }
 }

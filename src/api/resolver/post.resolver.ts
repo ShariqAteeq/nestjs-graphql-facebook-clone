@@ -37,8 +37,12 @@ export class PostResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => [Boolean])
-  async deletePost(@Args({ name: 'postId' }) postId: number): Promise<Boolean> {
-    return await this.postService.deletePost(postId);
+  @Mutation(() => Boolean)
+  async deletePost(
+    @Args({ name: 'postId' }) postId: number,
+    @CurrentUser() user,
+  ): Promise<Boolean> {
+    await this.postService.deletePost(postId, user);
+    return true;
   }
 }
