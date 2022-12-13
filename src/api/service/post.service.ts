@@ -1,5 +1,5 @@
+import { Relationship } from './../entities/relationship';
 import { TimelineService } from './timeline.service';
-import { RelationshipService } from './relationship.service';
 import { HelperService } from 'src/api/service/helper.service';
 import { FileUpload } from 'graphql-upload';
 import { UserService } from './user.service';
@@ -15,7 +15,8 @@ import { RelationshipType, RespondAction } from 'src/helpers/constant';
 export class PostService {
   constructor(
     @InjectRepository(Post) private postRepo: Repository<Post>,
-    private relService: RelationshipService,
+    @InjectRepository(Relationship)
+    private relationshipRepo: Repository<Relationship>,
     private timelineService: TimelineService,
     private userService: UserService,
     private helperService: HelperService,
@@ -61,19 +62,22 @@ export class PostService {
     const timelineArr = [
       { userId, postId: +res.id, timestamp: res.logCreatedAt },
     ];
-    // const myFirends = await this.relService.getUserFriends({
-    //   userId,
-    //   relationshipType: RelationshipType.FRIENDS,
-    //   status: RespondAction.ACCEPTED,
-    // });
 
-    // for (const x of myFirends) {
-    //   timelineArr.push({
-    //     userId: x.otherUserId,
-    //     postId: +res.id,
-    //     timestamp: res.logCreatedAt,
-    //   });
-    // }
+    const myFirends = await this.relationshipRepo.find({
+      where: {
+        userId,
+        relationshipType: RelationshipType.FRIENDS,
+        status: RespondAction.ACCEPTED,
+      },
+    });
+
+    for (const x of myFirends) {
+      timelineArr.push({
+        userId: x.otherUserId,
+        postId: +res.id,
+        timestamp: res.logCreatedAt,
+      });
+    }
     await this.timelineService.addPostsInTimeline(timelineArr);
     return res;
   }
