@@ -17,4 +17,11 @@ export class TimelineService {
   async addPostsInTimeline(payload: any): Promise<Timeline> {
     return await this.timelineRepo.save(payload);
   }
+
+  async deletePostsFromTimeline(payload: any): Promise<Boolean> {
+    console.log('payload', payload);
+    const res = await this.timelineRepo.delete(payload);
+    console.log('Res', res);
+    return true;
+  }
 }

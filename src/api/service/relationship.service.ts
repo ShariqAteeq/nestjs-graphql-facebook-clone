@@ -131,6 +131,29 @@ export class RelationshipService {
     }
     await this.relRepo.delete({ userId, otherUserId });
     if (existReq.status === RespondAction.ACCEPTED) {
+      // get friend's post
+      const getMyAndOtherUserPosts = await this.postRepo.find({
+        where: { creatorId: In([userId, otherUserId]) },
+      });
+
+      const myPosts = getMyAndOtherUserPosts?.filter(
+        (x) => x.creatorId === userId,
+      );
+      const otherUserPosts = getMyAndOtherUserPosts?.filter(
+        (x) => x.creatorId === otherUserId,
+      );
+
+      // deleting other user posts from my timeline
+      await this.timelineService.deletePostsFromTimeline({
+        userId,
+        postId: In(otherUserPosts?.map((x) => x.id)),
+      });
+      // deleting my posts from other user timeline
+      await this.timelineService.deletePostsFromTimeline({
+        userId: otherUserId,
+        postId: In(myPosts?.map((x) => x.id)),
+      });
+
       await this.relRepo.delete({ userId: otherUserId, otherUserId: userId });
     }
     return true;
@@ -142,8 +165,13 @@ export class RelationshipService {
   ): Promise<Relationship[]> {
     const { status, relationshipType, userId } = input;
     // const { userId } = user;
+
+    const condition = { relationshipType, status };
+    if (status === RespondAction.PENDING) condition['otherUserId'] = userId;
+    if (status === RespondAction.ACCEPTED) condition['userId'] = userId;
+
     const relation = await this.relRepo.find({
-      where: { userId, relationshipType, status },
+      where: condition,
     });
     return relation;
   }
