@@ -1,3 +1,4 @@
+import { User } from './user';
 import { Post } from './post';
 import { ReactionType } from './../../helpers/constant';
 import { Field, ObjectType } from '@nestjs/graphql';
@@ -19,6 +20,9 @@ export class Reaction {
   @PrimaryColumn()
   @Field()
   postId: number;
+
+  @Field(() => User, { nullable: true })
+  user: User;
 
   @Column()
   @Field(() => ReactionType)
