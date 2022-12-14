@@ -58,6 +58,12 @@ export enum NotificationType {
   SCONVO = 'SCONVO',
 }
 
+export enum ReactionType {
+  LIKE = 'LIKE',
+  LOVE = 'LOVE',
+  SAD = 'SAD',
+}
+
 export interface Mail {
   to: string;
   subject?: string;
@@ -69,6 +75,9 @@ export interface Mail {
 
 registerEnumType(UserRole, {
   name: 'UserRole',
+});
+registerEnumType(ReactionType, {
+  name: 'ReactionType',
 });
 registerEnumType(RelationshipType, {
   name: 'RelationshipType',

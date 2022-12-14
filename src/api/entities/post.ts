@@ -1,3 +1,4 @@
+import { Reaction } from './reaction';
 import { User } from './user';
 import { Field, ObjectType } from '@nestjs/graphql';
 import {
@@ -6,6 +7,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -28,6 +30,10 @@ export class Post {
   @JoinColumn({ name: 'creator_id' })
   @Field(() => User, { nullable: true })
   creator: User;
+
+  @OneToMany(() => Reaction, (re) => re.post, { nullable: true })
+  @Field(() => [Reaction], { nullable: true })
+  reactions: Reaction[];
 
   @Column('simple-array', { nullable: true })
   @Field(() => [String], { nullable: true })

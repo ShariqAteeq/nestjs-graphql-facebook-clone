@@ -32,7 +32,7 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
     }
 
     const token = authHeader.split(' ')[1];
-    // console.log('token', token);
+    console.log('token', token);
 
     const isTokenValid = this.authService.validateToken(token);
     // console.log('isTokenValid', isTokenValid);

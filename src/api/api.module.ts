@@ -1,3 +1,5 @@
+import { ReactionService } from './service/reaction.service';
+import { Reaction } from './entities/reaction';
 import { TimelineResolver } from './resolver/timeline.resolver';
 import { TimelineService } from './service/timeline.service';
 import { Timeline } from './entities/timeline';
@@ -29,6 +31,7 @@ import { Notification } from './entities/notification';
 import { NotificationService } from './service/notification.service';
 import { Journey } from './entities/journey';
 import { JourneyService } from './service/journey.service';
+import { ReactionResolver } from './resolver/reaction.resolver';
 
 @Module({
   imports: [
@@ -42,6 +45,7 @@ import { JourneyService } from './service/journey.service';
     TypeOrmModule.forFeature([Relationship]),
     TypeOrmModule.forFeature([Timeline]),
     TypeOrmModule.forFeature([Post]),
+    TypeOrmModule.forFeature([Reaction]),
     TypeOrmModule.forFeature([Test]),
   ],
   providers: [
@@ -62,6 +66,8 @@ import { JourneyService } from './service/journey.service';
     RelationshipResolver,
     TimelineService,
     TimelineResolver,
+    ReactionService,
+    ReactionResolver,
     {
       provide: 'PUB_SUB',
       useValue: new PubSub(),

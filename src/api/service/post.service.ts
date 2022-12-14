@@ -103,7 +103,7 @@ export class PostService {
   async getPost(postId: number): Promise<Post> {
     return await this.postRepo.findOne({
       where: { id: postId },
-      relations: ['creator'],
+      relations: ['creator', 'reactions'],
     });
   }
 
