@@ -90,7 +90,7 @@ export class PostService {
     return await this.postRepo.find({
       where: { creatorId: userId },
       order: { id: 'DESC' },
-      relations: ['creator'],
+      relations: ['creator', 'reactions'],
     });
   }
 

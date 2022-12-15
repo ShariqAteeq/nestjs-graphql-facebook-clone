@@ -1,3 +1,6 @@
+import { StoryService } from './service/story.service';
+import { StoryResolver } from './resolver/story.resolver';
+import { Story } from './entities/story';
 import { ReactionService } from './service/reaction.service';
 import { Reaction } from './entities/reaction';
 import { TimelineResolver } from './resolver/timeline.resolver';
@@ -46,9 +49,12 @@ import { ReactionResolver } from './resolver/reaction.resolver';
     TypeOrmModule.forFeature([Timeline]),
     TypeOrmModule.forFeature([Post]),
     TypeOrmModule.forFeature([Reaction]),
+    TypeOrmModule.forFeature([Story]),
     TypeOrmModule.forFeature([Test]),
   ],
   providers: [
+    StoryResolver,
+    StoryService,
     UserResolver,
     UserService,
     HelperService,

@@ -1,6 +1,12 @@
 import { RespondAction, RelationshipType } from './../../helpers/constant';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryColumn,
+} from 'typeorm';
 import { User } from './user';
 
 @ObjectType()
