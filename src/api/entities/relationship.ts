@@ -1,3 +1,4 @@
+import { Post } from './post';
 import { RespondAction, RelationshipType } from './../../helpers/constant';
 import { Field, ObjectType } from '@nestjs/graphql';
 import {
@@ -5,6 +6,8 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
+  OneToOne,
   PrimaryColumn,
 } from 'typeorm';
 import { User } from './user';
@@ -20,6 +23,7 @@ export class Relationship {
   @Field()
   otherUserId: string;
 
+  @ManyToOne(() => User, { nullable: true })
   @Field(() => User, { nullable: true })
   otherUser: User;
 

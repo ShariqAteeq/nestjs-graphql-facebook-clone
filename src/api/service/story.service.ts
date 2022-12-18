@@ -1,12 +1,10 @@
 import { Relationship } from './../entities/relationship';
-import { RelationshipService } from './relationship.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Story } from './../entities/story';
 import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { CurrentUser } from 'src/decorators/user.decorator';
 import { UserService } from './user.service';
-import { RelationshipType, RespondAction } from 'src/helpers/constant';
 
 @Injectable()
 export class StoryService {
@@ -34,22 +32,43 @@ export class StoryService {
   }
 
   async getFriendStories(@CurrentUser() user) {
-    // const friends = await this.relService.getUserFriends({
-    //   relationshipType: RelationshipType.FRIENDS,
-    //   status: RespondAction.ACCEPTED,
-    //   userId: user?.userId,
-    // });
-    // const myFirends = await this.relationshipRepo
-    //   .createQueryBuilder('relationship')
-    //   .leftJoinAndSelect('relationship.otherUser', 'otherUser')
-    //   .where('relationship.otherUserId = :userId');
-    //    const result = friends.map(async x => {
-    //     const stories = await this.storyRepo.find({ where: { creator_id: x.otherUserId } });
-    //     return {
-    //         user: x?.otherUser
-    //     }
-    //    })
-    //     console.log('friends', friends);
+    const myFirends = await this.relationshipRepo
+      .createQueryBuilder('relationship')
+      .leftJoinAndSelect('relationship.otherUser', 'user')
+      .where('relationship.userId = :userId', { userId: user?.userId })
+      .getMany();
+
+    console.log('myFirends', myFirends);
+
+    const storiesOfAllMyFreinds = await this.storyRepo.find({
+      where: {
+        creator_id: In([...myFirends.map((x) => x.otherUserId), user?.userId]),
+      },
+    });
+
+    console.log('storiesOfAllMyFreinds', storiesOfAllMyFreinds);
+
+    const result = myFirends.map((x) => {
+      const userStories = storiesOfAllMyFreinds.filter(
+        (y) => y.creator_id === x.otherUserId,
+      );
+      return {
+        user: x?.otherUser,
+        stories: userStories,
+      };
+    });
+
+    // Adding my stories
+    const myStories = storiesOfAllMyFreinds.filter(
+      (y) => y.creator_id === user?.userId,
+    );
+    result.push({
+      user: await this.userService.getUser(user?.userId),
+      stories: myStories,
+    });
+
+    console.log('Res', result);
+    return result;
   }
 
   async deleteStory(id: number): Promise<Boolean> {

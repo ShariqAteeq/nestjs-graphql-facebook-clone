@@ -1,3 +1,4 @@
+import { Relationship } from './relationship';
 import { Reaction } from './reaction';
 import { User } from './user';
 import { Field, ObjectType } from '@nestjs/graphql';

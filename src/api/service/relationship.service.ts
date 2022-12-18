@@ -164,7 +164,16 @@ export class RelationshipService {
     // @CurrentUser() user,
   ): Promise<Relationship[]> {
     const { status, relationshipType, userId } = input;
+
     // const { userId } = user;
+
+    const myFirends = await this.relRepo
+      .createQueryBuilder('relationship')
+      .leftJoinAndSelect('relationship.otherUser', 'user')
+      .where('relationship.userId = :userId', { userId: userId })
+      .getMany();
+
+    console.log('myFirends', myFirends);
 
     const condition = { relationshipType, status };
     if (status === RespondAction.PENDING) condition['otherUserId'] = userId;
