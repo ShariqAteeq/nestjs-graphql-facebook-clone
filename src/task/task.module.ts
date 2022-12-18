@@ -10,6 +10,7 @@ import { PostService } from './../api/service/post.service';
 import { Post } from './../api/entities/post';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
+import { Story } from 'src/api/entities/story';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { Module } from '@nestjs/common';
     TypeOrmModule.forFeature([Timeline]),
     TypeOrmModule.forFeature([User]),
     TypeOrmModule.forFeature([SMSToken]),
+    TypeOrmModule.forFeature([Story]),
   ],
   providers: [
     TasksService,

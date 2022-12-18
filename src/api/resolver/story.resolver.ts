@@ -24,6 +24,12 @@ export class StoryResolver {
   @Query(() => [FriendStoriesOutput])
   async getFriendStories(@CurrentUser() user): Promise<FriendStoriesOutput[]> {
     return await this.storyService.getFriendStories(user);
-    // return true;
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => Boolean)
+  async deleteStory(@Args('id') id: number): Promise<Boolean> {
+    await this.storyService.deleteStory(id);
+    return true;
   }
 }
